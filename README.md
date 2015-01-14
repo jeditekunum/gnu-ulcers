@@ -1,2 +1,2 @@
 # gnu-ulcers
-Hacks to make GNU behave
+Various tools to make GCC behave.
