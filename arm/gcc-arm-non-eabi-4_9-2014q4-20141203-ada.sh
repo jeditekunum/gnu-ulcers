@@ -62,7 +62,7 @@ then
  # Disable parallel build for mac as we will randomly run into "Permission denied" issue.
 -#    JOBS=`sysctl -n hw.ncpu`
 -    JOBS=1
-+# jediunix - no, do parallel
++# jeditekunum - no, do parallel
 +    JOBS=`sysctl -n hw.ncpu`
 +#    JOBS=1
      GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
@@ -84,7 +84,7 @@ then
  saveenvvar CFLAGS "$ENV_CFLAGS"
  saveenvvar CPPFLAGS "$ENV_CPPFLAGS"
  saveenvvar LDFLAGS "$ENV_LDFLAGS"
-+# jediunix added --disable-werror for sbrk in updated Mavericks/XCode
++# jeditekunum added --disable-werror for sbrk in updated Mavericks/XCode
  $SRCDIR/$BINUTILS/configure  \
      ${BINUTILS_CONFIG_OPTS} \
 +    --disable-werror \
@@ -94,8 +94,8 @@ then
 @@ -391,6 +393,7 @@
  rm -rf $BUILDDIR_NATIVE/gcc-final && mkdir -p $BUILDDIR_NATIVE/gcc-final
  pushd $BUILDDIR_NATIVE/gcc-final
- 
-+# jediunix - add Ada
+
++# jeditekunum - add Ada
  $SRCDIR/$GCC/configure --target=$TARGET \
      --prefix=$INSTALLDIR_NATIVE \
      --libexecdir=$INSTALLDIR_NATIVE/lib \
@@ -112,20 +112,20 @@ then
 @@ -433,6 +437,11 @@
    make -j$JOBS INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
  fi
- 
-+# jediunix
+
++# jeditekunum
 +make -C gnattools gnattools
 +rm gcc/stamp-tools
 +make -C gcc cross-gnattools
 +
  make install
- 
+
  if [ "x$skip_manual" != "xyes" ]; then
 @@ -504,7 +513,9 @@
  	saveenvvar CPPFLAGS "$ENV_CPPFLAGS"
  	saveenvvar LDFLAGS "$ENV_LDFLAGS"
- 
-+  # jediunix - add Ada
+
++  # jeditekunum - add Ada
  	$SRCDIR/$GDB/configure  \
 +	    --enable-languages=c,c++,ada \
  	    --target=$TARGET \
@@ -162,18 +162,18 @@ then
  id=$invoked
  case "$invoked" in
    as)
-+    #begin jediunix
++    #begin jeditekunum
 +    if [ "$1" == "-arch" ]
 +    then
 +	original=/usr/bin/as
 +    else
-+    #end jediunix
++    #end jeditekunum
      original=$ORIGINAL_AS_FOR_TARGET
      prog=as-new$exeext
      dir=gas
-+    #begin jediunix
++    #begin jeditekunum
 +    fi
-+    #end jediunix
++    #end jeditekunum
      ;;
    collect-ld)
      # Check -fuse-ld=bfd and -fuse-ld=gold
@@ -211,7 +211,7 @@ then
 +    mlib-tgt-specific.adb<mlib-tgt-specific-xi.adb"
 +    ;;
  esac
- 
+
  # From user or toplevel makefile.
 --- configure.ac.unpatched	2015-01-14 08:13:21.000000000 -0600
 +++ configure.ac	2015-01-14 08:13:21.000000000 -0600
@@ -229,7 +229,7 @@ then
 +    mlib-tgt-specific.adb<mlib-tgt-specific-xi.adb"
 +    ;;
  esac
- 
+
  # From user or toplevel makefile.
 EOF
 else
@@ -273,7 +273,7 @@ then
 @@ -3070,8 +3075,22 @@
    ENABLE_LIBADA=yes
  fi
- 
+
 -if test "${ENABLE_LIBADA}" != "yes" ; then
 -  noconfigdirs="$noconfigdirs gnattools"
 +# Check whether --enable-cross-gnattools was given.
@@ -293,7 +293,7 @@ then
 +    noconfigdirs="$noconfigdirs gnattools"
 +  fi
  fi
- 
+
  # Check whether --enable-libssp was given.
 --- configure.ac.unpatched	2015-01-14 08:03:43.000000000 -0600
 +++ configure.ac	2015-01-14 08:08:14.000000000 -0600
@@ -319,7 +319,7 @@ then
 +    noconfigdirs="$noconfigdirs gnattools"
 +  fi
  fi
- 
+
  AC_ARG_ENABLE(libssp,
 EOF
 else
@@ -343,7 +343,7 @@ fi
 echo $(date) "beginning build-toolchain ... (log in build-toolchain.log)"
 
 # manual and python in gdb not working with my macports
-$CAFFEINATE env -i "PATH=$BUILDPATH" ./build-toolchain.sh --skip_steps=manual,gdb-with-python >build-toolchain.log 2>&1 
+$CAFFEINATE env -i "PATH=$BUILDPATH" ./build-toolchain.sh --skip_steps=manual,gdb-with-python >build-toolchain.log 2>&1
 if [ $? -ne 0 ]
 then
     echo $(date) "build-toolchain.sh FAILED" 1>&2
